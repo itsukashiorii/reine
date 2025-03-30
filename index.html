@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="id">
+<!DOCTYPE html>
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -24,19 +25,32 @@
 </head>
 <body>
     <button id="playButton">Putar Musik</button>
+    <audio id="audio" src="rawr.mp3" loop></audio> 
+
     <script>
-        document.getElementById('playButton').addEventListener('click', function() {
-            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            const gainNode = audioCtx.createGain();
-            gainNode.gain.value = 100; // Volume super berisikconst audio = new Audio('rawr.mp3'); // Buat objek audio baru setiap kali tombol ditekan
+        const audio = document.getElementById('audio');
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         const source = audioCtx.createMediaElementSource(audio);
+        const gainNode = audioCtx.createGain();
+        
+        gainNode.gain.value = 50; // Volume super berisik (default biasanya 1.0)
+
         source.connect(gainNode);
         gainNode.connect(audioCtx.destination);
-        
-        audio.loop = false; // Setiap klik memulai audio baru tanpa menghentikan yang lama
-        audio.play();
-    });
-</script>
 
+        document.getElementById('playButton').addEventListener('click', function() {
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+
+            if (audio.paused) {
+                audio.play();
+                this.textContent = "Pause Musik";
+            } else {
+                audio.pause();
+                this.textContent = "Putar Musik";
+            }
+        });
+    </script>
 </body>
 </html>
